@@ -23,7 +23,7 @@ func NewHandler(db *database.ClickHouseDB) *Handler {
 }
 
 // 查询位次接口 - 使用新的数据源
-// GET /api/rank/get?score=555
+// GET /api/rank/get?score=555&province=湖北
 func (h *Handler) GetRank(c *gin.Context) {
 	scoreStr := c.Query("score")
 	if scoreStr == "" {
@@ -43,11 +43,21 @@ func (h *Handler) GetRank(c *gin.Context) {
 		return
 	}
 
+	// 获取省份参数（必填）
+	province := c.Query("province")
+	if province == "" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"code": 1,
+			"msg":  "缺少province参数",
+		})
+		return
+	}
+
 	// 获取科目类别参数，默认为物理
 	subjectCategory := c.DefaultQuery("subject_category", "物理")
 
 	// 使用新的查询方法
-	rank, err := h.db.QueryRankByScoreNew(score, subjectCategory)
+	rank, err := h.db.QueryRankByScoreNew(score, subjectCategory, province)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"code": 1,
@@ -86,7 +96,11 @@ func (h *Handler) QueryRank(c *gin.Context) {
 
 	// 参数验证
 	if req.Province == "" {
-		req.Province = "湖北"
+		c.JSON(http.StatusBadRequest, gin.H{
+			"code": 1,
+			"msg":  "province参数不能为空",
+		})
+		return
 	}
 	if req.Year == 0 {
 		req.Year = 2024
@@ -138,6 +152,14 @@ func (h *Handler) GetReport(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"code": 1,
 			"msg":  "缺少rank参数",
+		})
+		return
+	}
+
+	if province == "" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"code": 1,
+			"msg":  "缺少province参数",
 		})
 		return
 	}

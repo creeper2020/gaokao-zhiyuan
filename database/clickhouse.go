@@ -82,7 +82,7 @@ func (db *ClickHouseDB) Close() error {
 	return db.conn.Close()
 }
 
-// 创建新的湖北省数据表
+// 创建新的数据表（支持多省份）
 func (db *ClickHouseDB) CreateTable() error {
 	query := `
 	CREATE TABLE IF NOT EXISTS gaokao2025 (
@@ -92,7 +92,7 @@ func (db *ClickHouseDB) CreateTable() error {
 		major_code              String,
 		major_name              String,
 		major_group_code        String,
-		source_province         Enum8('湖北' = 1),
+		source_province         LowCardinality(String),
 		school_province         String,
 		school_city             String,
 		admission_batch         Enum8('本科批' = 1, '专科批' = 2),
@@ -190,7 +190,10 @@ func (db *ClickHouseDB) BatchInsert(data []models.AdmissionData) error {
 }
 
 // 根据分数查询位次 - 使用新表
-func (db *ClickHouseDB) QueryRankByScoreNew(score float64, subjectCategory string) (int64, error) {
+func (db *ClickHouseDB) QueryRankByScoreNew(score float64, subjectCategory string, province string) (int64, error) {
+	if province == "" {
+		return 0, errors.New("province is required")
+	}
 	// 查询语句：根据分数查询位次
 	query := `
 		SELECT min_rank_2024
@@ -198,12 +201,13 @@ func (db *ClickHouseDB) QueryRankByScoreNew(score float64, subjectCategory strin
 		WHERE min_score_2024 >= $1
 		AND min_rank_2024 > 0
 		AND subject_category = $2
+		AND source_province = $3
 		ORDER BY min_score_2024 ASC
 		LIMIT 1
 	`
 
 	var rank uint32
-	err := db.conn.QueryRow(context.Background(), query, score, subjectCategory).Scan(&rank)
+	err := db.conn.QueryRow(context.Background(), query, score, subjectCategory, province).Scan(&rank)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			// 如果没有找到记录，查询最高分对应的位次
@@ -213,11 +217,12 @@ func (db *ClickHouseDB) QueryRankByScoreNew(score float64, subjectCategory strin
 				WHERE min_score_2024 > 0
 				AND min_rank_2024 > 0
 				AND subject_category = $1
+				AND source_province = $2
 				ORDER BY min_score_2024 DESC
 				LIMIT 1
 			`
 			var estimateRank uint32
-			err = db.conn.QueryRow(context.Background(), estimateQuery, subjectCategory).Scan(&estimateRank)
+			err = db.conn.QueryRow(context.Background(), estimateQuery, subjectCategory, province).Scan(&estimateRank)
 			if err != nil {
 				return 0, errors.New("无法估算位次")
 			}
@@ -246,30 +251,30 @@ func (db *ClickHouseDB) QueryRankByScore(province string, year int, score float6
 	query := fmt.Sprintf(`
 		SELECT min_rank_2024
 		FROM default.gaokao2025
-		WHERE source_province = '湖北'
-		AND subject_category = $1
+		WHERE source_province = $1
+		AND subject_category = $2
 		%s
-		AND min_score_2024 >= $2
+		AND min_score_2024 >= $3
 		ORDER BY min_score_2024 ASC
 		LIMIT 1
 	`, classDemandCondition)
 
 	var rank uint32
-	err := db.conn.QueryRow(context.Background(), query, subjectType, score).Scan(&rank)
+	err := db.conn.QueryRow(context.Background(), query, province, subjectType, score).Scan(&rank)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			// 如果没有找到记录，查询该省份该年份最低分最高的记录的位次
 			estimateQuery := `
 				SELECT min_rank_2024
 				FROM default.gaokao2025
-				WHERE source_province = '湖北'
-				AND subject_category = $1
+				WHERE source_province = $1
+				AND subject_category = $2
 				AND min_score_2024 > 0
 				ORDER BY min_score_2024 DESC
 				LIMIT 1
 			`
 			var estimateRank uint32
-			err = db.conn.QueryRow(context.Background(), estimateQuery, subjectType).Scan(&estimateRank)
+			err = db.conn.QueryRow(context.Background(), estimateQuery, province, subjectType).Scan(&estimateRank)
 			if err != nil {
 				return 0, errors.New("无法估算位次")
 			}
@@ -298,31 +303,31 @@ func (db *ClickHouseDB) QueryScoreByRank(province string, year int, rank int64, 
 	query := fmt.Sprintf(`
 		SELECT min_score_2024
 		FROM default.gaokao2025
-		WHERE source_province = '湖北'
-		AND subject_category = $1
+		WHERE source_province = $1
+		AND subject_category = $2
 		%s
-		AND min_rank_2024 <= $2
+		AND min_rank_2024 <= $3
 		AND min_rank_2024 > 0
 		ORDER BY min_rank_2024 DESC
 		LIMIT 1
 	`, classDemandCondition)
 
 	var score uint16
-	err := db.conn.QueryRow(context.Background(), query, subjectType, rank).Scan(&score)
+	err := db.conn.QueryRow(context.Background(), query, province, subjectType, rank).Scan(&score)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			// 如果没有找到记录，查询该省份该年份最高位次最低的记录的分数
 			estimateQuery := `
 				SELECT min_score_2024
 				FROM default.gaokao2025
-				WHERE source_province = '湖北'
-				AND subject_category = $1
+				WHERE source_province = $1
+				AND subject_category = $2
 				AND min_rank_2024 > 0
 				ORDER BY min_rank_2024 ASC
 				LIMIT 1
 			`
 			var estimateScore uint16
-			err = db.conn.QueryRow(context.Background(), estimateQuery, subjectType).Scan(&estimateScore)
+			err = db.conn.QueryRow(context.Background(), estimateQuery, province, subjectType).Scan(&estimateScore)
 			if err != nil {
 				return 0, errors.New("无法估算分数")
 			}
@@ -342,26 +347,26 @@ func (db *ClickHouseDB) GetReportDataNew(rank int64, classFirstChoice string, cl
 	// 根据位次查询对应分数
 	var rankScoreUint16 uint16
 	scoreQuery := `
-		SELECT min_score_2024 
-		FROM default.gaokao2025 
-		WHERE min_rank_2024 <= ? AND min_rank_2024 > 0 AND subject_category = ?
-		ORDER BY min_rank_2024 DESC 
+		SELECT min_score_2024
+		FROM default.gaokao2025
+		WHERE min_rank_2024 <= ? AND min_rank_2024 > 0 AND subject_category = ? AND source_province = ?
+		ORDER BY min_rank_2024 DESC
 		LIMIT 1
 	`
 
-	row := db.conn.QueryRow(context.Background(), scoreQuery, rank, classFirstChoice)
+	row := db.conn.QueryRow(context.Background(), scoreQuery, rank, classFirstChoice, province)
 	err := row.Scan(&rankScoreUint16)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			// 如果没有找到精确位次，查询附近的位次
 			nearbyQuery := `
-				SELECT min_score_2024 
-				FROM default.gaokao2025 
-				WHERE min_rank_2024 > 0 AND subject_category = ?
+				SELECT min_score_2024
+				FROM default.gaokao2025
+				WHERE min_rank_2024 > 0 AND subject_category = ? AND source_province = ?
 				ORDER BY ABS(min_rank_2024 - ?)
 				LIMIT 1
 			`
-			row = db.conn.QueryRow(context.Background(), nearbyQuery, classFirstChoice, rank)
+			row = db.conn.QueryRow(context.Background(), nearbyQuery, classFirstChoice, province, rank)
 			err = row.Scan(&rankScoreUint16)
 			if err != nil {
 				log.Printf("无法找到位次 %d 附近的数据，使用默认分数 500", rank)
@@ -383,6 +388,13 @@ func (db *ClickHouseDB) GetReportDataNew(rank int64, classFirstChoice string, cl
 	var conditions []string
 	var args []interface{}
 	argIndex := 1
+
+	// 0. 省份筛选
+	if province != "" {
+		conditions = append(conditions, fmt.Sprintf("source_province = $%d", argIndex))
+		args = append(args, province)
+		argIndex++
+	}
 
 	// 1. 一次筛选：选科分类
 	subjectConditions := db.buildSubjectConditions(classFirstChoice, classOptionalChoice)
@@ -560,7 +572,7 @@ func (db *ClickHouseDB) GetReportDataNew(rank int64, classFirstChoice string, cl
 			// 直接使用用户选择的首选科目类型
 			subjectType := classFirstChoice
 			// 使用专业最低分计算2024年排名
-			rank2024 := GetRankByScore2024(int(majorMinScore), subjectType)
+			rank2024 := GetRankByScore2024(province, int(majorMinScore), subjectType)
 			majorMinRank2024Ptr = &rank2024
 		}
 
@@ -926,5 +938,5 @@ func (db *ClickHouseDB) GetDataCount() (int64, error) {
 // 根据分数查询位次（简化版，不考虑科类和选科条件）
 func (db *ClickHouseDB) QueryRankByScoreSimple(province string, year int, score float64) (int64, error) {
 	// 使用新表查询，默认查询物理类
-	return db.QueryRankByScoreNew(score, "物理")
+	return db.QueryRankByScoreNew(score, "物理", province)
 }

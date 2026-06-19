@@ -2,9 +2,11 @@ package database
 
 import (
 	"encoding/json"
+	"fmt"
 	"gaokao-zhiyuan/models"
 	"log"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 )
@@ -20,26 +22,75 @@ type ScoreRankJSON struct {
 	Data []ScoreRankEntry `json:"data"`
 }
 
-// 2024年湖北省一分一段表数据（从官方JSON文件加载）
-var scoreRankTable2024 models.ScoreRankTable2024
+// 多省份2024年一分一段表数据（从官方JSON文件加载）
+var scoreRankTables2024 map[string]*models.ScoreRankTable2024
 
-// 初始化函数，加载官方一分一段表数据
+// 初始化函数，加载所有省份的官方一分一段表数据
 func init() {
-	loadScoreRankData()
+	scoreRankTables2024 = make(map[string]*models.ScoreRankTable2024)
+	loadAllProvinceScoreRankData()
 }
 
-// 加载官方一分一段表数据
-func loadScoreRankData() {
+// loadAllProvinceScoreRankData 从 data/ 目录加载所有省份的一分一段表数据
+func loadAllProvinceScoreRankData() {
+	dataDir := "data"
+
+	entries, err := os.ReadDir(dataDir)
+	if err != nil {
+		log.Printf("警告: 无法读取数据目录 %s: %v，尝试从 hubei_data 加载向后兼容数据", dataDir, err)
+		// 向后兼容：尝试旧路径
+		loadProvinceScoreRankData("hubei", "hubei_data")
+		return
+	}
+
+	for _, entry := range entries {
+		if !entry.IsDir() {
+			continue
+		}
+		province := entry.Name()
+		provinceDir := filepath.Join(dataDir, province)
+
+		// 检查该省份目录下是否有排名数据文件
+		physicsFile := filepath.Join(provinceDir, fmt.Sprintf("ranking_score_%s_physics.json", province))
+		historyFile := filepath.Join(provinceDir, fmt.Sprintf("ranking_score_%s_history.json", province))
+
+		if _, err := os.Stat(physicsFile); err == nil {
+			loadProvinceScoreRankData(province, provinceDir)
+		} else if _, err := os.Stat(historyFile); err == nil {
+			loadProvinceScoreRankData(province, provinceDir)
+		} else {
+			log.Printf("省份 %s 目录下未找到排名数据文件，跳过", province)
+		}
+	}
+
+	if len(scoreRankTables2024) == 0 {
+		log.Printf("警告: 未加载任何省份的一分一段表数据")
+	}
+}
+
+// loadProvinceScoreRankData 加载指定省份的一分一段表数据
+func loadProvinceScoreRankData(province string, dataDir string) {
+	table := &models.ScoreRankTable2024{}
+
 	// 加载物理类数据
-	physicsData := loadJSONFile("hubei_data/ranking_score_hubei_physics.json")
-	scoreRankTable2024.Physics = convertToScoreRankData(physicsData)
+	physicsFile := filepath.Join(dataDir, fmt.Sprintf("ranking_score_%s_physics.json", province))
+	physicsData := loadJSONFile(physicsFile)
+	if len(physicsData) > 0 {
+		table.Physics = convertToScoreRankData(physicsData)
+	}
 
 	// 加载历史类数据
-	historyData := loadJSONFile("hubei_data/ranking_score_hubei_history.json")
-	scoreRankTable2024.History = convertToScoreRankData(historyData)
+	historyFile := filepath.Join(dataDir, fmt.Sprintf("ranking_score_%s_history.json", province))
+	historyData := loadJSONFile(historyFile)
+	if len(historyData) > 0 {
+		table.History = convertToScoreRankData(historyData)
+	}
 
-	log.Printf("已加载2024年湖北省一分一段表数据：物理类 %d 条，历史类 %d 条",
-		len(scoreRankTable2024.Physics), len(scoreRankTable2024.History))
+	if len(table.Physics) > 0 || len(table.History) > 0 {
+		scoreRankTables2024[province] = table
+		log.Printf("已加载2024年%s省一分一段表数据：物理类 %d 条，历史类 %d 条",
+			province, len(table.Physics), len(table.History))
+	}
 }
 
 // 从JSON文件加载数据
@@ -48,7 +99,7 @@ func loadJSONFile(filename string) []ScoreRankEntry {
 	file, err := os.Open(filename)
 	if err != nil {
 		// 如果失败，尝试相对于当前工作目录的路径
-		log.Printf("尝试打开文件 %s 失败: %v，尝试其他路径", filename, err)
+		log.Printf("尝试打开文件 %s 失败: %v", filename, err)
 
 		// 获取当前工作目录
 		pwd, _ := os.Getwd()
@@ -130,23 +181,29 @@ func parseScoreField(scoreStr string) []int {
 	return scores
 }
 
-// GetRankByScore2024 根据分数和首选科目查询2024年一分一段表排名
-func GetRankByScore2024(score int, subjectType string) int {
+// GetRankByScore2024 根据省份、分数和首选科目查询2024年一分一段表排名
+func GetRankByScore2024(province string, score int, subjectType string) int {
+	table, exists := scoreRankTables2024[province]
+	if !exists {
+		log.Printf("警告: 未找到省份 %s 的一分一段表数据，返回默认排名", province)
+		return 1
+	}
+
 	var data []models.ScoreRankData
 
 	// 根据首选科目选择对应的一分一段表
 	if subjectType == "物理" {
-		data = scoreRankTable2024.Physics
+		data = table.Physics
 	} else if subjectType == "历史" {
-		data = scoreRankTable2024.History
+		data = table.History
 	} else {
 		// 默认使用物理类
-		data = scoreRankTable2024.Physics
+		data = table.Physics
 	}
 
-	// 数据为空时的异常处理（理论上不应该发生）
+	// 数据为空时的异常处理
 	if len(data) == 0 {
-		log.Printf("严重错误：一分一段表数据为空")
+		log.Printf("警告: 省份 %s 的%s类一分一段表数据为空", province, subjectType)
 		return 1 // 返回最佳排名作为默认值
 	}
 

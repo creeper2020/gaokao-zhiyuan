@@ -102,7 +102,7 @@ type ScoreRankData struct {
 	Rank  int `json:"rank"`  // 排名
 }
 
-// 2024年湖北省一分一段表（硬编码数据）
+// 2024年一分一段表数据结构（按省份索引）
 type ScoreRankTable2024 struct {
 	Physics []ScoreRankData `json:"physics"` // 物理类
 	History []ScoreRankData `json:"history"` // 历史类
