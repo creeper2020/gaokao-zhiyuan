@@ -1,0 +1,628 @@
+{
+  "北京": [
+    {
+      "year": 2025,
+      "batch": "本科批",
+      "subject": "综合改革",
+      "score_line": 434
+    },
+    {
+      "year": 2025,
+      "batch": "特殊类型线",
+      "subject": "综合改革",
+      "score_line": 523
+    }
+  ],
+  "天津": [
+    {
+      "year": 2025,
+      "batch": "本科批",
+      "subject": "综合改革",
+      "score_line": 472
+    },
+    {
+      "year": 2025,
+      "batch": "特殊类型线",
+      "subject": "综合改革",
+      "score_line": 563
+    }
+  ],
+  "上海": [
+    {
+      "year": 2025,
+      "batch": "本科批",
+      "subject": "综合改革",
+      "score_line": 403
+    },
+    {
+      "year": 2025,
+      "batch": "特殊类型线",
+      "subject": "综合改革",
+      "score_line": 503
+    }
+  ],
+  "浙江": [
+    {
+      "year": 2025,
+      "batch": "一段线",
+      "subject": "综合改革",
+      "score_line": 488
+    },
+    {
+      "year": 2025,
+      "batch": "二段线",
+      "subject": "综合改革",
+      "score_line": 274
+    },
+    {
+      "year": 2025,
+      "batch": "特殊类型线",
+      "subject": "综合改革",
+      "score_line": 510
+    }
+  ],
+  "山东": [
+    {
+      "year": 2025,
+      "batch": "一段线",
+      "subject": "综合改革",
+      "score_line": 443
+    },
+    {
+      "year": 2025,
+      "batch": "二段线",
+      "subject": "综合改革",
+      "score_line": 150
+    },
+    {
+      "year": 2025,
+      "batch": "特殊类型线",
+      "subject": "综合改革",
+      "score_line": 520
+    }
+  ],
+  "海南": [
+    {
+      "year": 2025,
+      "batch": "本科批",
+      "subject": "综合改革",
+      "score_line": 483
+    },
+    {
+      "year": 2025,
+      "batch": "特殊类型线",
+      "subject": "综合改革",
+      "score_line": 569
+    }
+  ],
+  "河北": [
+    {
+      "year": 2025,
+      "batch": "本科批",
+      "subject": "物理类",
+      "score_line": 439
+    },
+    {
+      "year": 2025,
+      "batch": "本科批",
+      "subject": "历史类",
+      "score_line": 430
+    },
+    {
+      "year": 2025,
+      "batch": "特殊类型线",
+      "subject": "物理类",
+      "score_line": 492
+    },
+    {
+      "year": 2025,
+      "batch": "特殊类型线",
+      "subject": "历史类",
+      "score_line": 495
+    }
+  ],
+  "辽宁": [
+    {
+      "year": 2025,
+      "batch": "本科批",
+      "subject": "物理类",
+      "score_line": 362
+    },
+    {
+      "year": 2025,
+      "batch": "本科批",
+      "subject": "历史类",
+      "score_line": 404
+    },
+    {
+      "year": 2025,
+      "batch": "特殊类型线",
+      "subject": "物理类",
+      "score_line": 501
+    },
+    {
+      "year": 2025,
+      "batch": "特殊类型线",
+      "subject": "历史类",
+      "score_line": 500
+    }
+  ],
+  "江苏": [
+    {
+      "year": 2025,
+      "batch": "本科批",
+      "subject": "物理类",
+      "score_line": 448
+    },
+    {
+      "year": 2025,
+      "batch": "本科批",
+      "subject": "历史类",
+      "score_line": 474
+    },
+    {
+      "year": 2025,
+      "batch": "特殊类型线",
+      "subject": "物理类",
+      "score_line": 512
+    },
+    {
+      "year": 2025,
+      "batch": "特殊类型线",
+      "subject": "历史类",
+      "score_line": 527
+    }
+  ],
+  "福建": [
+    {
+      "year": 2025,
+      "batch": "本科批",
+      "subject": "物理类",
+      "score_line": 431
+    },
+    {
+      "year": 2025,
+      "batch": "本科批",
+      "subject": "历史类",
+      "score_line": 453
+    }
+  ],
+  "湖北": [
+    {
+      "year": 2025,
+      "batch": "本科批",
+      "subject": "物理类",
+      "score_line": 424
+    },
+    {
+      "year": 2025,
+      "batch": "本科批",
+      "subject": "历史类",
+      "score_line": 432
+    },
+    {
+      "year": 2025,
+      "batch": "特殊类型线",
+      "subject": "物理类",
+      "score_line": 506
+    },
+    {
+      "year": 2025,
+      "batch": "特殊类型线",
+      "subject": "历史类",
+      "score_line": 525
+    }
+  ],
+  "湖南": [
+    {
+      "year": 2025,
+      "batch": "本科批",
+      "subject": "物理类",
+      "score_line": 422
+    },
+    {
+      "year": 2025,
+      "batch": "本科批",
+      "subject": "历史类",
+      "score_line": 438
+    }
+  ],
+  "广东": [
+    {
+      "year": 2025,
+      "batch": "本科批",
+      "subject": "物理类",
+      "score_line": 439
+    },
+    {
+      "year": 2025,
+      "batch": "本科批",
+      "subject": "历史类",
+      "score_line": 433
+    },
+    {
+      "year": 2025,
+      "batch": "特殊类型线",
+      "subject": "物理类",
+      "score_line": 504
+    },
+    {
+      "year": 2025,
+      "batch": "特殊类型线",
+      "subject": "历史类",
+      "score_line": 519
+    }
+  ],
+  "重庆": [
+    {
+      "year": 2025,
+      "batch": "本科批",
+      "subject": "物理类",
+      "score_line": 427
+    },
+    {
+      "year": 2025,
+      "batch": "本科批",
+      "subject": "历史类",
+      "score_line": 458
+    }
+  ],
+  "甘肃": [
+    {
+      "year": 2025,
+      "batch": "本科批",
+      "subject": "物理类",
+      "score_line": 370
+    },
+    {
+      "year": 2025,
+      "batch": "本科批",
+      "subject": "历史类",
+      "score_line": 420
+    }
+  ],
+  "黑龙江": [
+    {
+      "year": 2025,
+      "batch": "本科批",
+      "subject": "物理类",
+      "score_line": 360
+    },
+    {
+      "year": 2025,
+      "batch": "本科批",
+      "subject": "历史类",
+      "score_line": 410
+    }
+  ],
+  "吉林": [
+    {
+      "year": 2025,
+      "batch": "本科批",
+      "subject": "物理类",
+      "score_line": 345
+    },
+    {
+      "year": 2025,
+      "batch": "本科批",
+      "subject": "历史类",
+      "score_line": 375
+    }
+  ],
+  "安徽": [
+    {
+      "year": 2025,
+      "batch": "本科批",
+      "subject": "物理类",
+      "score_line": 425
+    },
+    {
+      "year": 2025,
+      "batch": "本科批",
+      "subject": "历史类",
+      "score_line": 440
+    }
+  ],
+  "江西": [
+    {
+      "year": 2025,
+      "batch": "本科批",
+      "subject": "物理类",
+      "score_line": 440
+    },
+    {
+      "year": 2025,
+      "batch": "本科批",
+      "subject": "历史类",
+      "score_line": 460
+    }
+  ],
+  "贵州": [
+    {
+      "year": 2025,
+      "batch": "本科批",
+      "subject": "物理类",
+      "score_line": 371
+    },
+    {
+      "year": 2025,
+      "batch": "本科批",
+      "subject": "历史类",
+      "score_line": 442
+    }
+  ],
+  "广西": [
+    {
+      "year": 2025,
+      "batch": "本科批",
+      "subject": "物理类",
+      "score_line": 371
+    },
+    {
+      "year": 2025,
+      "batch": "本科批",
+      "subject": "历史类",
+      "score_line": 428
+    }
+  ],
+  "河南": [
+    {
+      "year": 2025,
+      "batch": "本科一批",
+      "subject": "理科",
+      "score_line": 514
+    },
+    {
+      "year": 2025,
+      "batch": "本科一批",
+      "subject": "文科",
+      "score_line": 547
+    },
+    {
+      "year": 2025,
+      "batch": "本科二批",
+      "subject": "理科",
+      "score_line": 409
+    },
+    {
+      "year": 2025,
+      "batch": "本科二批",
+      "subject": "文科",
+      "score_line": 465
+    }
+  ],
+  "四川": [
+    {
+      "year": 2025,
+      "batch": "本科一批",
+      "subject": "理科",
+      "score_line": 539
+    },
+    {
+      "year": 2025,
+      "batch": "本科一批",
+      "subject": "文科",
+      "score_line": 527
+    },
+    {
+      "year": 2025,
+      "batch": "本科二批",
+      "subject": "理科",
+      "score_line": 459
+    },
+    {
+      "year": 2025,
+      "batch": "本科二批",
+      "subject": "文科",
+      "score_line": 457
+    }
+  ],
+  "云南": [
+    {
+      "year": 2025,
+      "batch": "本科一批",
+      "subject": "理科",
+      "score_line": 505
+    },
+    {
+      "year": 2025,
+      "batch": "本科一批",
+      "subject": "文科",
+      "score_line": 530
+    },
+    {
+      "year": 2025,
+      "batch": "本科二批",
+      "subject": "理科",
+      "score_line": 405
+    },
+    {
+      "year": 2025,
+      "batch": "本科二批",
+      "subject": "文科",
+      "score_line": 465
+    }
+  ],
+  "山西": [
+    {
+      "year": 2025,
+      "batch": "本科一批",
+      "subject": "理科",
+      "score_line": 480
+    },
+    {
+      "year": 2025,
+      "batch": "本科一批",
+      "subject": "文科",
+      "score_line": 490
+    },
+    {
+      "year": 2025,
+      "batch": "本科二批",
+      "subject": "理科",
+      "score_line": 396
+    },
+    {
+      "year": 2025,
+      "batch": "本科二批",
+      "subject": "文科",
+      "score_line": 418
+    }
+  ],
+  "陕西": [
+    {
+      "year": 2025,
+      "batch": "本科一批",
+      "subject": "理科",
+      "score_line": 475
+    },
+    {
+      "year": 2025,
+      "batch": "本科一批",
+      "subject": "文科",
+      "score_line": 489
+    },
+    {
+      "year": 2025,
+      "batch": "本科二批",
+      "subject": "理科",
+      "score_line": 372
+    },
+    {
+      "year": 2025,
+      "batch": "本科二批",
+      "subject": "文科",
+      "score_line": 400
+    }
+  ],
+  "内蒙古": [
+    {
+      "year": 2025,
+      "batch": "本科一批",
+      "subject": "理科",
+      "score_line": 434
+    },
+    {
+      "year": 2025,
+      "batch": "本科一批",
+      "subject": "文科",
+      "score_line": 478
+    },
+    {
+      "year": 2025,
+      "batch": "本科二批",
+      "subject": "理科",
+      "score_line": 333
+    },
+    {
+      "year": 2025,
+      "batch": "本科二批",
+      "subject": "文科",
+      "score_line": 379
+    }
+  ],
+  "新疆": [
+    {
+      "year": 2025,
+      "batch": "本科一批",
+      "subject": "理科",
+      "score_line": 396
+    },
+    {
+      "year": 2025,
+      "batch": "本科一批",
+      "subject": "文科",
+      "score_line": 458
+    },
+    {
+      "year": 2025,
+      "batch": "本科二批",
+      "subject": "理科",
+      "score_line": 285
+    },
+    {
+      "year": 2025,
+      "batch": "本科二批",
+      "subject": "文科",
+      "score_line": 354
+    }
+  ],
+  "宁夏": [
+    {
+      "year": 2025,
+      "batch": "本科一批",
+      "subject": "理科",
+      "score_line": 432
+    },
+    {
+      "year": 2025,
+      "batch": "本科一批",
+      "subject": "文科",
+      "score_line": 488
+    },
+    {
+      "year": 2025,
+      "batch": "本科二批",
+      "subject": "理科",
+      "score_line": 350
+    },
+    {
+      "year": 2025,
+      "batch": "本科二批",
+      "subject": "文科",
+      "score_line": 421
+    }
+  ],
+  "青海": [
+    {
+      "year": 2025,
+      "batch": "本科一批",
+      "subject": "理科",
+      "score_line": 330
+    },
+    {
+      "year": 2025,
+      "batch": "本科一批",
+      "subject": "文科",
+      "score_line": 400
+    },
+    {
+      "year": 2025,
+      "batch": "本科二批",
+      "subject": "理科",
+      "score_line": 296
+    },
+    {
+      "year": 2025,
+      "batch": "本科二批",
+      "subject": "文科",
+      "score_line": 370
+    }
+  ],
+  "西藏": [
+    {
+      "year": 2025,
+      "batch": "本科一批",
+      "subject": "理科",
+      "score_line": 305
+    },
+    {
+      "year": 2025,
+      "batch": "本科一批",
+      "subject": "文科",
+      "score_line": 350
+    },
+    {
+      "year": 2025,
+      "batch": "本科二批",
+      "subject": "理科",
+      "score_line": 260
+    },
+    {
+      "year": 2025,
+      "batch": "本科二批",
+      "subject": "文科",
+      "score_line": 310
+    }
+  ]
+}
